@@ -1,0 +1,1763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFVideos</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0f0f0f;
+            --bg2: #161616;
+            --bg3: #1c1c1c;
+            --bg4: #242424;
+            --line: #2e2e2e;
+            --t1: #f0f0f0;
+            --t2: #999;
+            --t3: #555;
+            --red: #e63946;
+            --red-dim: rgba(230,57,70,0.15);
+            --warning: #f0a500;
+        }
+
+        body.light {
+            --bg: #f5f5f5;
+            --bg2: #ffffff;
+            --bg3: #ebebeb;
+            --bg4: #e0e0e0;
+            --line: #d4d4d4;
+            --t1: #111;
+            --t2: #555;
+            --t3: #999;
+            --red-dim: rgba(230,57,70,0.1);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--t1);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* ── HEADER ── */
+        header {
+            height: 56px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            padding: 0 24px;
+            gap: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, var(--red) 0%, transparent 40%);
+            opacity: 0.5;
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--t1);
+            cursor: pointer;
+            user-select: none;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        .logo-icon {
+            width: 28px; height: 20px;
+            background: var(--red);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.3px;
+        }
+
+        .search-container { flex: 1; max-width: 560px; }
+        .search-wrapper { position: relative; }
+
+        #searchInput {
+            width: 100%;
+            height: 36px;
+            padding: 0 40px 0 14px;
+            background: var(--bg3);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            color: var(--t1);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        #searchInput:focus {
+            border-color: var(--t3);
+            background: var(--bg2);
+        }
+        #searchInput::placeholder { color: var(--t3); }
+
+        .search-btn {
+            position: absolute;
+            right: 0; top: 0;
+            height: 36px; width: 36px;
+            background: none;
+            border: none;
+            color: var(--t3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            transition: color 0.15s;
+        }
+        .search-btn:hover { color: var(--t1); }
+
+        .header-actions { display: flex; gap: 8px; align-items: center; margin-left: auto; }
+
+        .header-btn {
+            height: 32px;
+            padding: 0 14px;
+            background: var(--bg3);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            color: var(--t2);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .header-btn:hover { background: var(--bg4); color: var(--t1); }
+
+        .graxybot-header-btn {
+            height: 32px;
+            padding: 0 14px;
+            background: var(--bg3);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            color: var(--t2);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .graxybot-header-btn:hover { background: var(--bg4); color: var(--t1); }
+
+        /* ── API BANNER ── */
+        .api-banner {
+            background: var(--bg2);
+            border-bottom: 1px solid var(--line);
+            padding: 10px 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 13px;
+        }
+        .api-banner.hidden { display: none; }
+        .api-banner-text { color: var(--t2); flex: 1; }
+        .api-banner-text strong { color: var(--warning); font-weight: 600; }
+        .api-banner-text a { color: var(--warning); }
+        .api-key-input {
+            flex: 1;
+            max-width: 380px;
+            height: 32px;
+            padding: 0 12px;
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            background: var(--bg3);
+            color: var(--t1);
+            font-size: 12px;
+            font-family: 'SF Mono', 'Courier New', monospace;
+            outline: none;
+        }
+        .api-key-input:focus { border-color: var(--warning); }
+        .api-save-btn {
+            height: 32px;
+            padding: 0 16px;
+            background: var(--warning);
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: opacity 0.15s;
+        }
+        .api-save-btn:hover { opacity: 0.85; }
+
+        /* ── LAYOUT ── */
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px 24px 40px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--t1);
+        }
+        .results-count {
+            font-size: 13px;
+            color: var(--t3);
+        }
+
+        /* ── CHIPS ── */
+        .suggestions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--line);
+        }
+        .suggestion-chip {
+            height: 30px;
+            padding: 0 14px;
+            background: var(--bg3);
+            border: 1px solid var(--line);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--t2);
+            cursor: pointer;
+            transition: all 0.15s;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .suggestion-chip:hover { background: var(--bg4); color: var(--t1); border-color: var(--t3); }
+        .suggestion-chip.active { background: var(--t1); color: var(--bg); border-color: var(--t1); }
+
+        /* ── VIDEO GRID ── */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .video-card {
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            background: transparent;
+            transition: transform 0.2s;
+        }
+        .video-card:hover { transform: translateY(-2px); }
+        .video-card:hover .thumbnail { transform: scale(1.03); }
+        .video-card:hover .play-overlay { opacity: 1; }
+
+        .thumbnail-wrapper {
+            position: relative;
+            padding-top: 56.25%;
+            background: var(--bg3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .thumbnail {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+        .play-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .play-overlay::after {
+            content: '';
+            width: 48px; height: 48px;
+            background: rgba(0,0,0,0.75);
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.9);
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8 5v14l11-7z'/%3E%3C/svg%3E");
+            background-size: 55%;
+            background-repeat: no-repeat;
+            background-position: 55% 50%;
+            background-color: rgba(0,0,0,0.7);
+        }
+        .duration {
+            position: absolute;
+            bottom: 7px; right: 7px;
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+
+        .video-info { padding: 10px 2px 0; }
+        .video-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--t1);
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 5px;
+        }
+        .channel-name {
+            font-size: 12.5px;
+            color: var(--t2);
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .channel-badge {
+            width: 13px; height: 13px;
+            background: var(--t3);
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: var(--bg);
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .video-stats {
+            font-size: 12px;
+            color: var(--t3);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ── WELCOME STATE ── */
+        .welcome-state {
+            padding: 80px 20px 60px;
+            text-align: center;
+            animation: fadeUp 0.3s ease;
+        }
+        .welcome-state h2 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--t1);
+            margin-bottom: 8px;
+        }
+        .welcome-state p {
+            font-size: 14px;
+            color: var(--t2);
+            margin-bottom: 32px;
+        }
+        .welcome-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+        .welcome-chip {
+            height: 36px;
+            padding: 0 18px;
+            background: var(--bg3);
+            border: 1px solid var(--line);
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--t2);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .welcome-chip:hover { background: var(--bg4); color: var(--t1); border-color: var(--t3); }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            grid-column: 1 / -1;
+            color: var(--t2);
+        }
+        .empty-state h2 { font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--t1); }
+        .empty-state p { font-size: 14px; }
+
+        /* ── SKELETON ── */
+        .skeleton-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .skeleton-card { border-radius: 8px; overflow: hidden; }
+        .skeleton-thumb {
+            padding-top: 56.25%;
+            border-radius: 8px;
+            background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-info { padding: 10px 2px 0; }
+        .skeleton-line {
+            height: 11px;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            background: linear-gradient(90deg, var(--bg3) 25%, var(--bg4) 50%, var(--bg3) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-line.short { width: 55%; }
+        .skeleton-line.shorter { width: 35%; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── PLAYER MODAL ── */
+        .player-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 200;
+            overflow-y: auto;
+            animation: fadeUp 0.2s ease;
+        }
+        .player-modal.active { display: block; }
+
+        .player-close {
+            position: fixed;
+            top: 14px; left: 20px;
+            z-index: 201;
+            width: 36px; height: 36px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+        .player-close:hover { background: rgba(255,255,255,0.15); }
+
+        .player-container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 64px 28px 40px;
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 28px;
+            align-items: start;
+        }
+        .player-main {}
+
+        .player-wrapper {
+            position: relative;
+            padding-top: 56.25%;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .player-wrapper iframe {
+            position: absolute;
+            inset: 0;
+            width: 100%; height: 100%;
+            border: none;
+        }
+
+        .player-details {
+            padding: 18px 0 0;
+        }
+        .player-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 10px;
+            line-height: 1.35;
+        }
+        .player-channel {
+            font-size: 14px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .player-stats {
+            font-size: 13px;
+            color: rgba(255,255,255,0.35);
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .graxybot-action-btn {
+            height: 34px;
+            padding: 0 16px;
+            background: var(--bg3);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            color: var(--t2);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .graxybot-action-btn:hover { background: var(--bg4); color: var(--t1); }
+
+        /* Related panel */
+        .related-panel {
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .related-panel h3 {
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            padding: 0 4px 12px;
+        }
+        .related-card {
+            display: flex;
+            gap: 10px;
+            cursor: pointer;
+            border-radius: 6px;
+            padding: 8px;
+            transition: background 0.15s;
+        }
+        .related-card:hover { background: rgba(255,255,255,0.05); }
+        .related-thumb-wrap {
+            position: relative;
+            flex-shrink: 0;
+            width: 130px; height: 73px;
+            border-radius: 5px;
+            overflow: hidden;
+            background: var(--bg4);
+        }
+        .related-thumb { width: 100%; height: 100%; object-fit: cover; }
+        .related-duration {
+            position: absolute;
+            bottom: 4px; right: 4px;
+            background: rgba(0,0,0,0.85);
+            color: #fff;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .related-info { flex: 1; min-width: 0; }
+        .related-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.85);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+        .related-channel { font-size: 12px; color: rgba(255,255,255,0.35); }
+
+        /* ── GRAXYBOT FAB ── */
+        .graxybot-fab {
+            position: fixed;
+            bottom: 28px; right: 28px;
+            width: 44px; height: 44px;
+            background: var(--bg3);
+            border: 1px solid var(--line);
+            border-radius: 50%;
+            color: var(--t2);
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 150;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+        }
+        .graxybot-fab:hover { background: var(--bg4); color: var(--t1); border-color: var(--t3); }
+
+        /* ── GRAXYBOT PANEL ── */
+        .graxybot-panel {
+            position: fixed;
+            top: 0; right: -520px;
+            width: 520px; height: 100%;
+            background: #0d0d0d;
+            border-left: 1px solid var(--line);
+            z-index: 250;
+            transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+            display: flex;
+            flex-direction: column;
+        }
+        .graxybot-panel.active { right: 0; }
+
+        /* Top bar */
+        .graxybot-header {
+            height: 52px;
+            padding: 0 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+        .graxybot-menu-btn {
+            width: 32px; height: 32px;
+            background: none;
+            border: none;
+            color: var(--t2);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            border-radius: 6px;
+            transition: background 0.15s;
+            padding: 0;
+        }
+        .graxybot-menu-btn:hover { background: rgba(255,255,255,0.06); }
+        .graxybot-menu-btn span {
+            display: block;
+            width: 16px; height: 1.5px;
+            background: var(--t2);
+            border-radius: 2px;
+        }
+        .graxybot-close {
+            width: 32px; height: 32px;
+            background: none;
+            border: none;
+            color: var(--t3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .graxybot-close:hover { background: rgba(255,255,255,0.06); color: var(--t1); }
+
+        /* Empty/welcome state — shown when no messages */
+        .graxybot-welcome {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px 120px;
+            pointer-events: none;
+        }
+        .graxybot-welcome h1 {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4da6ff 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -1px;
+            margin: 0;
+        }
+        .graxybot-welcome.hidden { display: none; }
+
+        /* Messages area */
+        .graxybot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .graxybot-messages.hidden { display: none; }
+
+        .message { display: flex; gap: 8px; animation: msgIn 0.2s ease; }
+        @keyframes msgIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .message.user { flex-direction: row-reverse; }
+
+        .message-avatar {
+            width: 26px; height: 26px;
+            border-radius: 50%;
+            background: var(--bg4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .message-content {
+            max-width: 80%;
+            padding: 9px 13px;
+            border-radius: 14px;
+            font-size: 13.5px;
+            line-height: 1.55;
+            white-space: pre-line;
+        }
+        .message.bot .message-content {
+            background: #1e1e1e;
+            color: #e8e8e8;
+            border-radius: 4px 14px 14px 14px;
+        }
+        .message.user .message-content {
+            background: #2a2a2a;
+            color: #e8e8e8;
+            border-radius: 14px 4px 14px 14px;
+        }
+
+        /* Typing */
+        .typing-indicator .message-content {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 12px 16px;
+        }
+        .typing-dot {
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--t3);
+            animation: tdot 1.3s ease-in-out infinite;
+        }
+        .typing-dot:nth-child(2) { animation-delay: 0.15s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.3s; }
+        @keyframes tdot { 0%,60%,100% { opacity:0.25; transform:scale(0.85); } 30% { opacity:1; transform:scale(1); } }
+
+        /* Input area */
+        .graxybot-input-container {
+            padding: 16px 20px 24px;
+            flex-shrink: 0;
+        }
+        .graxybot-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            background: #1a1a1a;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 10px 10px 10px 16px;
+            transition: border-color 0.15s;
+        }
+        .graxybot-input-wrapper:focus-within { border-color: rgba(255,255,255,0.22); }
+        #graxyInput {
+            flex: 1;
+            background: none;
+            border: none;
+            color: #e8e8e8;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            resize: none;
+            max-height: 100px;
+            line-height: 1.5;
+        }
+        #graxyInput::placeholder { color: #555; }
+
+        /* Send button */
+        .graxy-send-btn {
+            width: 32px; height: 32px;
+            background: #e8e8e8;
+            border: none;
+            border-radius: 9px;
+            color: #0d0d0d;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: opacity 0.15s;
+        }
+        .graxy-send-btn:hover { opacity: 0.85; }
+        .graxy-send-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--t3); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 1100px) {
+            .player-container { grid-template-columns: 1fr; }
+            .related-panel { max-height: unset; flex-direction: row; flex-wrap: wrap; }
+            .related-card { width: calc(50% - 5px); }
+        }
+        @media (max-width: 1024px) {
+            .video-grid, .skeleton-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+        }
+        @media (max-width: 768px) {
+            .video-grid, .skeleton-grid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+            .graxybot-panel { width: 100%; right: -100%; }
+            header { flex-wrap: wrap; height: auto; padding: 10px 16px; gap: 10px; }
+            .search-container { order: 3; max-width: 100%; width: 100%; }
+            .player-container { padding: 56px 16px 24px; }
+        }
+        @media (max-width: 480px) {
+            .video-grid, .skeleton-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+            .container { padding: 16px; }
+            .graxybot-fab { bottom: 20px; right: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" onclick="goHome()">
+            <div class="logo-icon">GF</div>
+            GFVideos
+        </div>
+        <div class="search-container">
+            <div class="search-wrapper">
+                <input type="text" id="searchInput" placeholder="Search..." autocomplete="off" />
+                <button class="search-btn" onclick="performSearch()" title="Search">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                </button>
+            </div>
+        </div>
+        <div class="header-actions">
+            <button class="graxybot-header-btn" onclick="toggleGraxybot()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+                Graxybot
+            </button>
+            <button class="header-btn" onclick="toggleTheme()" title="Toggle theme">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/></svg>
+            </button>
+        </div>
+    </header>
+
+
+    <div class="container" id="mainContainer">
+        <!-- Suggestion chips -->
+        <div class="suggestions" id="suggestions"></div>
+
+        <!-- Section header (shown during search results) -->
+        <div class="section-header" id="sectionHeader" style="display:none;">
+            <h2 class="section-title" id="sectionTitle">Results</h2>
+            <span class="results-count" id="resultsCount"></span>
+        </div>
+
+        <!-- Main content area -->
+        <div id="contentArea"></div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div class="player-modal" id="playerModal">
+        <div class="player-close" onclick="closePlayer()">×</div>
+        <div class="player-container">
+            <div class="player-main">
+                <div class="player-wrapper">
+                    <iframe id="videoPlayer"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                <div class="player-details">
+                    <h1 class="player-title" id="playerTitle"></h1>
+                    <p class="player-channel" id="playerChannel"></p>
+                    <div class="player-stats" id="playerStats"></div>
+                    <button class="graxybot-action-btn" onclick="summarizeVideo()">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+                        Ask Graxybot about this video
+                    </button>
+                </div>
+            </div>
+            <div class="related-panel" id="relatedPanel">
+                <h3>Up next</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graxybot FAB -->
+    <button class="graxybot-fab" onclick="toggleGraxybot()" title="Chat with Graxybot (Cmd+G)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    </button>
+
+    <!-- Graxybot Panel -->
+    <div class="graxybot-panel" id="graxyPanel">
+        <div class="graxybot-header">
+            <button class="graxybot-menu-btn" title="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <button class="graxybot-close" onclick="toggleGraxybot()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <!-- Welcome state (shown when chat is empty) -->
+        <div class="graxybot-welcome" id="graxyWelcome">
+            <h1>Graxybot</h1>
+        </div>
+
+        <!-- Messages (hidden when empty) -->
+        <div class="graxybot-messages hidden" id="graxyMessages"></div>
+
+        <div class="graxybot-input-container">
+            <div class="graxybot-input-wrapper">
+                <textarea id="graxyInput" placeholder="Ask me anything..." rows="1"></textarea>
+                <button class="graxy-send-btn" id="graxySendBtn" onclick="sendGraxyMessage()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ================================================================
+    //  CONFIG & STATE
+    // ================================================================
+
+    // API calls go through Vercel serverless proxies — keys live in Vercel env vars, never in client code
+    const YT_PROXY = '/api/youtube';
+    const OPENAI_PROXY = '/api/openai';
+
+    // API_KEY is no longer needed client-side (proxied), but keep a flag for "is the app configured"
+    // We always treat the app as configured when using the proxy — keys are server-side
+    let API_KEY = 'proxy'; // non-empty = configured
+    let OPENAI_KEY = 'proxy'; // non-empty = configured
+    let currentVideo = null;
+    let currentSearchQuery = '';
+    let currentPageToken = '';
+    let watchHistory = JSON.parse(localStorage.getItem('watchHistory') || '[]');
+    let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+    let chatHistory = [];
+    let currentResults = [];
+    let graxyTypingEl = null;
+
+    // Graxybot system prompt
+    const GRAXY_SYSTEM_PROMPT = `you are graxybot, a friendly ai assistant built into a video streaming app called gfvideos. you help users find and explore videos.
+
+rules you must always follow:
+- speak entirely in lowercase. no capital letters anywhere, ever. not even at the start of sentences.
+- be casual, warm, and brief. conversational energy, like texting a friend.
+- never use asterisks, markdown formatting, or bullet points with dashes. just plain text.
+- if the user wants to find, watch, search for, or see videos, always set wants_search to true in your response.
+- when wants_search is true, also provide a clean youtube search_query extracted from what they want.
+- don't over-explain. keep responses short.
+
+you must respond ONLY with valid JSON in this exact shape:
+{
+  "reply": "your message to the user",
+  "wants_search": false,
+  "search_query": ""
+}
+
+if wants_search is false, search_query should be an empty string.
+if wants_search is true, search_query should be a clean 2-4 word youtube search term.
+
+examples:
+user: "hey"
+{"reply": "hey! what do you want to watch?", "wants_search": false, "search_query": ""}
+
+user: "show me funny cat videos"
+{"reply": "sure! pulling those up now", "wants_search": true, "search_query": "funny cat videos"}
+
+user: "i want to learn guitar"
+{"reply": "on it! let me find some guitar lessons for you", "wants_search": true, "search_query": "guitar lessons beginner"}
+
+user: "what's trending"
+{"reply": "let me check what's hot right now", "wants_search": true, "search_query": "trending videos 2025"}`;
+
+    const GRAXY_VIDEO_SYSTEM_PROMPT = `you are graxybot, a friendly ai assistant in a video streaming app. a user is asking about a specific video they're watching.
+
+rules:
+- speak entirely in lowercase. no capitals anywhere.
+- be casual and brief.
+- you only know the video's title, channel name, view count, and duration. make intelligent observations based on that.
+- don't pretend to know the actual video content. make educated guesses based on the title.
+- keep your response to 2-4 sentences max.
+- no asterisks, no markdown, no bullet points.`;
+
+    const SUGGESTION_TOPICS = [
+        { label: '🔥 Trending', query: 'trending 2025' },
+        { label: '🎮 Gaming', query: 'gaming highlights 2025' },
+        { label: '🎵 Music', query: 'music 2025' },
+        { label: '💻 Coding', query: 'programming tutorial' },
+        { label: '⚽ Sports', query: 'sports highlights' },
+        { label: '🔬 Science', query: 'science explained' },
+        { label: '😂 Comedy', query: 'funny videos' },
+        { label: '🍳 Cooking', query: 'cooking recipes' },
+    ];
+
+
+    // ================================================================
+    //  OPENAI API CALLS
+    // ================================================================
+
+    async function openAIChat(messages, systemPrompt) {
+        try {
+            // Build a single input string: system prompt + conversation history + latest user message
+            const lastUserMsg = messages[messages.length - 1]?.content || '';
+            const history = messages.slice(0, -1).map(m =>
+                `${m.role === 'user' ? 'user' : 'graxybot'}: ${m.content}`
+            ).join('\n');
+            const input = `${systemPrompt}\n\n${history ? history + '\n' : ''}user: ${lastUserMsg}`;
+
+            const res = await fetch(OPENAI_PROXY, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    model: 'gpt-5-mini',
+                    input,
+                }),
+            });
+            if (!res.ok) {
+                const err = await res.json();
+                console.error('OpenAI error:', err);
+                return null;
+            }
+            const data = await res.json();
+            // output[0] may be a reasoning block; find the message type
+            const msgBlock = data.output?.find(o => o.type === 'message');
+            return msgBlock?.content?.[0]?.text || null;
+        } catch (e) {
+            console.error('OpenAI fetch error:', e);
+            return null;
+        }
+    }
+
+    // ================================================================
+    //  YOUTUBE API CALLS
+    // ================================================================
+
+    async function ytFetch(endpoint, params) {
+        const url = new URL(YT_PROXY, window.location.origin);
+        url.searchParams.set('endpoint', endpoint);
+        for (const [k, v] of Object.entries(params)) {
+            if (v !== undefined && v !== null && v !== '') {
+                url.searchParams.set(k, v);
+            }
+        }
+        try {
+            const res = await fetch(url.toString());
+            if (!res.ok) {
+                const err = await res.json();
+                console.error('YT API error:', err);
+                return null;
+            }
+            return await res.json();
+        } catch (e) {
+            console.error('Fetch error:', e);
+            return null;
+        }
+    }
+
+    async function searchVideos(query, pageToken = '') {
+        return ytFetch('search', {
+            part: 'snippet',
+            q: query,
+            type: 'video',
+            maxResults: 24,
+            pageToken,
+            safeSearch: 'moderate',
+            relevanceLanguage: 'en',
+            videoEmbeddable: 'true',
+        });
+    }
+
+    async function getTrending(pageToken = '') {
+        return ytFetch('videos', {
+            part: 'snippet,statistics,contentDetails',
+            chart: 'mostPopular',
+            maxResults: 24,
+            regionCode: 'US',
+            pageToken,
+        });
+    }
+
+    async function getVideoDetails(videoIds) {
+        return ytFetch('videos', {
+            part: 'snippet,statistics,contentDetails',
+            id: videoIds.join(','),
+        });
+    }
+
+    async function getRelatedVideos(videoId) {
+        // Use search with the video title as a fallback (relatedToVideoId was deprecated)
+        return ytFetch('search', {
+            part: 'snippet',
+            relatedToVideoId: videoId,
+            type: 'video',
+            maxResults: 10,
+            videoEmbeddable: 'true',
+        });
+    }
+
+    // ================================================================
+    //  DATA NORMALISATION
+    // ================================================================
+
+    // Normalise search result items (snippet only) → video object
+    function normaliseSearchItem(item) {
+        const s = item.snippet;
+        const vid = item.id?.videoId || item.id;
+        return {
+            id: vid,
+            title: s.title,
+            channel: s.channelTitle,
+            thumbnail: s.thumbnails?.high?.url || s.thumbnails?.medium?.url || s.thumbnails?.default?.url,
+            uploadDate: timeAgo(s.publishedAt),
+            publishedAt: s.publishedAt,
+            views: null,
+            duration: null,
+            description: s.description || '',
+        };
+    }
+
+    // Normalise videos.list items (has statistics + contentDetails)
+    function normaliseVideoItem(item) {
+        const s = item.snippet;
+        return {
+            id: item.id,
+            title: s.title,
+            channel: s.channelTitle,
+            thumbnail: s.thumbnails?.high?.url || s.thumbnails?.medium?.url || s.thumbnails?.default?.url,
+            uploadDate: timeAgo(s.publishedAt),
+            publishedAt: s.publishedAt,
+            views: formatViews(item.statistics?.viewCount),
+            duration: parseDuration(item.contentDetails?.duration),
+            description: s.description || '',
+        };
+    }
+
+    // ================================================================
+    //  FORMAT HELPERS
+    // ================================================================
+
+    function formatViews(n) {
+        if (!n) return null;
+        const num = parseInt(n, 10);
+        if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'B';
+        if (num >= 1_000_000) return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+        if (num >= 1_000) return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'K';
+        return num.toString();
+    }
+
+    function parseDuration(iso) {
+        if (!iso) return null;
+        const m = iso.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+        if (!m) return null;
+        const h = parseInt(m[1] || 0), min = parseInt(m[2] || 0), s = parseInt(m[3] || 0);
+        if (h > 0) return `${h}:${String(min).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        return `${min}:${String(s).padStart(2,'0')}`;
+    }
+
+    function timeAgo(dateStr) {
+        if (!dateStr) return '';
+        const diff = Date.now() - new Date(dateStr).getTime();
+        const s = diff / 1000;
+        if (s < 60) return 'just now';
+        const m = s / 60; if (m < 60) return `${Math.floor(m)}m ago`;
+        const hr = m / 60; if (hr < 24) return `${Math.floor(hr)}h ago`;
+        const d = hr / 24; if (d < 7) return `${Math.floor(d)}d ago`;
+        const w = d / 7; if (w < 5) return `${Math.floor(w)}w ago`;
+        const mo = d / 30; if (mo < 12) return `${Math.floor(mo)}mo ago`;
+        return `${Math.floor(mo / 12)}y ago`;
+    }
+
+    function escapeHtml(str) {
+        return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    // ================================================================
+    //  RENDER
+    // ================================================================
+
+    function renderVideoCard(video) {
+        const card = document.createElement('div');
+        card.className = 'video-card';
+        card.onclick = () => openPlayer(video);
+
+        const thumb = video.thumbnail || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>';
+        const duration = video.duration ? `<div class="duration">${escapeHtml(video.duration)}</div>` : '';
+        const views = video.views ? `<span>👁 ${escapeHtml(video.views)} views</span>` : '';
+
+        card.innerHTML = `
+            <div class="thumbnail-wrapper">
+                <img class="thumbnail" src="${escapeHtml(thumb)}" alt="${escapeHtml(video.title)}" loading="lazy" />
+                <div class="play-overlay"></div>
+                ${duration}
+            </div>
+            <div class="video-info">
+                <div class="video-title">${escapeHtml(video.title)}</div>
+                <div class="channel-name">
+                    <span class="channel-badge">✓</span>
+                    ${escapeHtml(video.channel)}
+                </div>
+                <div class="video-stats">
+                    ${views}
+                    ${views && video.uploadDate ? '<span>·</span>' : ''}
+                    ${video.uploadDate ? `<span>${escapeHtml(video.uploadDate)}</span>` : ''}
+                </div>
+            </div>
+        `;
+        return card;
+    }
+
+    function renderSkeletons(count = 12) {
+        const grid = document.createElement('div');
+        grid.className = 'skeleton-grid';
+        for (let i = 0; i < count; i++) {
+            grid.innerHTML += `
+                <div class="skeleton-card">
+                    <div class="skeleton-thumb"></div>
+                    <div class="skeleton-info">
+                        <div class="skeleton-line"></div>
+                        <div class="skeleton-line short"></div>
+                        <div class="skeleton-line shorter"></div>
+                    </div>
+                </div>
+            `;
+        }
+        return grid;
+    }
+
+    function displayVideos(videos) {
+        const area = document.getElementById('contentArea');
+        area.innerHTML = '';
+
+        if (!videos || videos.length === 0) {
+            area.innerHTML = `
+                <div class="empty-state">
+                    <h2>😕 No results found</h2>
+                    <p>Try a different search term or explore trending videos.</p>
+                </div>
+            `;
+            return;
+        }
+
+        const grid = document.createElement('div');
+        grid.className = 'video-grid';
+        videos.forEach(v => grid.appendChild(renderVideoCard(v)));
+        area.appendChild(grid);
+    }
+
+    // ================================================================
+    //  WELCOME / HOME STATE
+    // ================================================================
+
+    async function showWelcomeState() {
+        const area = document.getElementById('contentArea');
+        document.getElementById('sectionHeader').style.display = 'none';
+        document.getElementById('suggestions').style.display = 'none';
+
+        const lastQuery = localStorage.getItem('lastSearchQuery');
+        if (lastQuery) {
+            await loadRecommended(lastQuery);
+        } else {
+            area.innerHTML = `
+                <div class="welcome-state">
+                    <span class="welcome-icon">🔍</span>
+                    <h2>Try searching something</h2>
+                    <p>Search for any topic, creator, or video — made for GF.</p>
+                    <div class="welcome-chips">
+                        ${SUGGESTION_TOPICS.map(t =>
+                            `<div class="welcome-chip" onclick="quickSearch('${escapeHtml(t.query)}')">${t.label}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    async function loadRecommended(query) {
+        const area = document.getElementById('contentArea');
+        document.getElementById('sectionHeader').style.display = 'flex';
+        document.getElementById('sectionTitle').textContent = `✨ Recommended for you`;
+        document.getElementById('resultsCount').innerHTML = `based on <strong style="color:var(--t2)">"${escapeHtml(query)}"</strong>`;
+        document.getElementById('suggestions').style.display = 'flex';
+
+        // Show skeletons while loading
+        area.innerHTML = '';
+        area.appendChild(renderSkeletons(12));
+
+        const data = await searchVideos(query);
+
+        if (!data || !data.items || data.items.length === 0) {
+            // Query no longer returns results — fall back to blank welcome
+            localStorage.removeItem('lastSearchQuery');
+            area.innerHTML = `
+                <div class="welcome-state">
+                    <span class="welcome-icon">🔍</span>
+                    <h2>Try searching something</h2>
+                    <p>Search for any topic, creator, or video — made for GF.</p>
+                    <div class="welcome-chips">
+                        ${SUGGESTION_TOPICS.map(t =>
+                            `<div class="welcome-chip" onclick="quickSearch('${escapeHtml(t.query)}')">${t.label}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            document.getElementById('sectionHeader').style.display = 'none';
+            document.getElementById('suggestions').style.display = 'none';
+            return;
+        }
+
+        const ids = data.items.map(i => i.id?.videoId || i.id).filter(Boolean);
+        const details = await getVideoDetails(ids);
+        const detailMap = {};
+        if (details?.items) {
+            details.items.forEach(i => { detailMap[i.id] = i; });
+        }
+
+        const videos = data.items.map(item => {
+            const vid = item.id?.videoId || item.id;
+            if (detailMap[vid]) return normaliseVideoItem(detailMap[vid]);
+            return normaliseSearchItem(item);
+        });
+
+        displayVideos(videos);
+    }
+
+    function quickSearch(query) {
+        document.getElementById('searchInput').value = query;
+        performSearch();
+    }
+
+    // ================================================================
+    //  SUGGESTIONS / CHIPS (top row)
+    // ================================================================
+
+    function renderSuggestions() {
+        const container = document.getElementById('suggestions');
+        container.innerHTML = '';
+        SUGGESTION_TOPICS.forEach(t => {
+            const chip = document.createElement('div');
+            chip.className = 'suggestion-chip';
+            chip.textContent = t.label;
+            chip.onclick = () => {
+                document.querySelectorAll('.suggestion-chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                quickSearch(t.query);
+            };
+            container.appendChild(chip);
+        });
+    }
+
+    // ================================================================
+    //  SEARCH
+    // ================================================================
+
+    let searchTimeout;
+
+    document.getElementById('searchInput').addEventListener('input', e => {
+        clearTimeout(searchTimeout);
+        const q = e.target.value.trim();
+        if (q.length === 0) {
+            goHome();
+        } else if (q.length > 2) {
+            searchTimeout = setTimeout(performSearch, 600);
+        }
+    });
+
+    document.getElementById('searchInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') { clearTimeout(searchTimeout); performSearch(); }
+    });
+
+    async function performSearch() {
+        const query = document.getElementById('searchInput').value.trim();
+        if (!query) { goHome(); return; }
+
+        currentSearchQuery = query;
+        addToSearchHistory(query);
+        localStorage.setItem('lastSearchQuery', query);
+
+        // Reset chip active states
+        document.querySelectorAll('.suggestion-chip').forEach(c => c.classList.remove('active'));
+
+        // Show skeleton + chips
+        const area = document.getElementById('contentArea');
+        area.innerHTML = '';
+        area.appendChild(renderSkeletons(12));
+        document.getElementById('sectionHeader').style.display = 'flex';
+        document.getElementById('sectionTitle').textContent = `Results for "${query}"`;
+        document.getElementById('resultsCount').textContent = '';
+        document.getElementById('suggestions').style.display = 'flex';
+
+        const data = await searchVideos(query);
+
+        if (!data || !data.items || data.items.length === 0) {
+            displayVideos([]);
+            document.getElementById('sectionHeader').style.display = 'none';
+            return;
+        }
+
+        // Fetch full details (views, duration) for the found video IDs
+        const ids = data.items.map(i => i.id?.videoId || i.id).filter(Boolean);
+        const details = await getVideoDetails(ids);
+        const detailMap = {};
+        if (details?.items) {
+            details.items.forEach(i => { detailMap[i.id] = i; });
+        }
+
+        currentResults = data.items.map(item => {
+            const vid = item.id?.videoId || item.id;
+            if (detailMap[vid]) return normaliseVideoItem(detailMap[vid]);
+            return normaliseSearchItem(item);
+        });
+
+        displayVideos(currentResults);
+        document.getElementById('resultsCount').textContent =
+            `${currentResults.length} result${currentResults.length !== 1 ? 's' : ''}`;
+    }
+
+
+    // ================================================================
+    //  HOME
+    // ================================================================
+
+    function goHome() {
+        document.getElementById('searchInput').value = '';
+        currentSearchQuery = '';
+        showWelcomeState();
+    }
+
+    // ================================================================
+    //  VIDEO PLAYER
+    // ================================================================
+
+    async function openPlayer(video) {
+        currentVideo = video;
+        addToWatchHistory(video);
+
+        document.getElementById('playerTitle').textContent = video.title;
+        document.getElementById('playerChannel').textContent = video.channel;
+        document.getElementById('playerStats').innerHTML = `
+            ${video.views ? `<span>👁 ${escapeHtml(video.views)} views</span>` : ''}
+            ${video.uploadDate ? `<span>📅 ${escapeHtml(video.uploadDate)}</span>` : ''}
+            ${video.duration ? `<span>⏱ ${escapeHtml(video.duration)}</span>` : ''}
+        `;
+
+        // Set iframe src
+        document.getElementById('videoPlayer').src =
+            `https://www.youtube.com/embed/${encodeURIComponent(video.id)}?autoplay=1&rel=0&modestbranding=1`;
+
+        // Open modal
+        document.getElementById('playerModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+
+        // Load related videos
+        loadRelatedVideos(video);
+    }
+
+    async function loadRelatedVideos(video) {
+        const panel = document.getElementById('relatedPanel');
+        panel.innerHTML = `<h3>Up next</h3><div style="color:var(--text-tertiary);font-size:13px;padding:8px 0">Loading...</div>`;
+
+        // Try relatedToVideoId first; if it fails fall back to title search
+        let data = await getRelatedVideos(video.id);
+
+        // relatedToVideoId may be deprecated/unavailable — fallback
+        if (!data || !data.items || data.items.length === 0) {
+            data = await searchVideos(video.title.split(' ').slice(0, 5).join(' '));
+        }
+
+        panel.innerHTML = '<h3>Up next</h3>';
+
+        if (!data?.items) return;
+
+        const items = data.items.filter(i => {
+            const id = i.id?.videoId || i.id;
+            return id && id !== video.id;
+        }).slice(0, 8);
+
+        items.forEach(item => {
+            const v = normaliseSearchItem(item);
+            const card = document.createElement('div');
+            card.className = 'related-card';
+            card.onclick = () => openPlayer(v);
+            card.innerHTML = `
+                <div class="related-thumb-wrap">
+                    <img class="related-thumb" src="${escapeHtml(v.thumbnail || '')}" alt="${escapeHtml(v.title)}" loading="lazy"/>
+                    ${v.duration ? `<div class="related-duration">${escapeHtml(v.duration)}</div>` : ''}
+                </div>
+                <div class="related-info">
+                    <div class="related-title">${escapeHtml(v.title)}</div>
+                    <div class="related-channel">${escapeHtml(v.channel)}</div>
+                </div>
+            `;
+            panel.appendChild(card);
+        });
+    }
+
+    function closePlayer() {
+        document.getElementById('playerModal').classList.remove('active');
+        document.getElementById('videoPlayer').src = '';
+        document.body.style.overflow = 'auto';
+        currentVideo = null;
+    }
+
+    // ================================================================
+    //  GRAXYBOT AI ASSISTANT
+    // ================================================================
+
+    function toggleGraxybot() {
+        const panel = document.getElementById('graxyPanel');
+        const isOpening = !panel.classList.contains('active');
+        panel.classList.toggle('active');
+        if (isOpening) {
+            chatHistory = [];
+            renderChatHistory();
+            document.getElementById('graxyInput').focus();
+        }
+    }
+
+    function renderChatHistory() {
+        const container = document.getElementById('graxyMessages');
+        container.innerHTML = '';
+        updateWelcomeVisibility();
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function updateWelcomeVisibility() {
+        const welcome = document.getElementById('graxyWelcome');
+        const messages = document.getElementById('graxyMessages');
+        if (chatHistory.length === 0) {
+            welcome.classList.remove('hidden');
+            messages.classList.add('hidden');
+        } else {
+            welcome.classList.add('hidden');
+            messages.classList.remove('hidden');
+        }
+    }
+
+    function appendMessageEl(container, text, isUser) {
+        const div = document.createElement('div');
+        div.className = `message ${isUser ? 'user' : 'bot'}`;
+        div.innerHTML = `
+            <div class="message-avatar">${isUser ? '👤' : '🤖'}</div>
+            <div class="message-content">${escapeHtml(text)}</div>
+        `;
+        container.appendChild(div);
+        return div;
+    }
+
+    function appendBotMessage(container, text) {
+        return appendMessageEl(container, text, false);
+    }
+
+    function showTypingIndicator() {
+        const container = document.getElementById('graxyMessages');
+        const div = document.createElement('div');
+        div.className = 'message bot typing-indicator';
+        div.innerHTML = `
+            <div class="message-avatar">🤖</div>
+            <div class="message-content">
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+                <span class="typing-dot"></span>
+            </div>
+        `;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+        graxyTypingEl = div;
+        return div;
+    }
+
+    function removeTypingIndicator() {
+        if (graxyTypingEl) { graxyTypingEl.remove(); graxyTypingEl = null; }
+    }
+
+    function saveChatMsg(text, isUser) {
+        chatHistory.push({ text, isUser, ts: Date.now() });
+        if (chatHistory.length > 100) chatHistory = chatHistory.slice(-100);
+        updateWelcomeVisibility();
+    }
+
+    async function sendGraxyMessage() {
+        const input = document.getElementById('graxyInput');
+        const btn = document.getElementById('graxySendBtn');
+        const message = input.value.trim();
+        if (!message) return;
+
+        const container = document.getElementById('graxyMessages');
+
+        // Add user message
+        appendMessageEl(container, message, true);
+        saveChatMsg(message, true);
+        input.value = '';
+        input.style.height = 'auto';
+        btn.disabled = true;
+        container.scrollTop = container.scrollHeight;
+
+        // Show typing
+        showTypingIndicator();
+
+        const result = await processGraxyMessage(message);
+
+        removeTypingIndicator();
+        appendBotMessage(container, result.reply);
+        saveChatMsg(result.reply, false);
+        container.scrollTop = container.scrollHeight;
+
+        // Two-phase search flow: user reads response, then we close + search
+        if (result.wants_search && result.search_query) {
+            await new Promise(r => setTimeout(r, 1200));
+            toggleGraxybot(); // close panel
+            document.getElementById('searchInput').value = result.search_query;
+            await performSearch();
+        }
+
+        btn.disabled = false;
+    }
+
+    async function processGraxyMessage(message) {
+        // Build conversation context for OpenAI (last 10 messages)
+        const recentHistory = chatHistory.slice(-10);
+        const messages = recentHistory.map(m => ({
+            role: m.isUser ? 'user' : 'assistant',
+            content: m.text,
+        }));
+        messages.push({ role: 'user', content: message });
+
+        const rawResponse = await openAIChat(messages, GRAXY_SYSTEM_PROMPT);
+
+        if (rawResponse) {
+            try {
+                // Strip markdown code fences if present
+                const cleaned = rawResponse.replace(/^```json\n?|\n?```$/g, '').trim();
+                const parsed = JSON.parse(cleaned);
+                return {
+                    reply: parsed.reply || "hmm, something went weird. try again?",
+                    wants_search: !!parsed.wants_search,
+                    search_query: parsed.search_query || '',
+                };
+            } catch (e) {
+                // If JSON parse fails, use the raw text as the reply
+                return { reply: rawResponse.toLowerCase(), wants_search: false, search_query: '' };
+            }
+        }
+
+        // Fallback if OpenAI is unavailable
+        return { reply: "sorry, i'm having trouble connecting right now. try again in a sec!", wants_search: false, search_query: '' };
+    }
+
+    async function summarizeVideo() {
+        if (!currentVideo) return;
+        const panel = document.getElementById('graxyPanel');
+        if (!panel.classList.contains('active')) toggleGraxybot();
+
+        await new Promise(r => setTimeout(r, 300));
+        const container = document.getElementById('graxyMessages');
+        const v = currentVideo;
+
+        // User-side message
+        const userMsg = `tell me about this video: "${v.title}"`;
+        appendMessageEl(container, userMsg, true);
+        saveChatMsg(userMsg, true);
+        container.scrollTop = container.scrollHeight;
+
+        showTypingIndicator();
+
+        const videoContext = `title: "${v.title}"\nchannel: ${v.channel}${v.views ? `\nviews: ${v.views}` : ''}${v.duration ? `\nduration: ${v.duration}` : ''}${v.uploadDate ? `\nuploaded: ${v.uploadDate}` : ''}`;
+
+        const rawResponse = await openAIChat(
+            [{ role: 'user', content: `tell me about this video:\n${videoContext}` }],
+            GRAXY_VIDEO_SYSTEM_PROMPT
+        );
+
+        removeTypingIndicator();
+
+        const reply = rawResponse
+            ? rawResponse.toLowerCase()
+            : `"${v.title}" by ${v.channel}${v.duration ? ` — ${v.duration} long` : ''}. looks like a solid watch. want me to find more like it?`;
+
+        appendBotMessage(container, reply);
+        saveChatMsg(reply, false);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    // Graxybot input listeners
+    document.getElementById('graxyInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendGraxyMessage(); }
+    });
+    document.getElementById('graxyInput').addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+    });
+
+    // ================================================================
+    //  HISTORY
+    // ================================================================
+
+    function addToWatchHistory(video) {
+        watchHistory = watchHistory.filter(v => v.id !== video.id);
+        watchHistory.unshift(video);
+        if (watchHistory.length > 50) watchHistory = watchHistory.slice(0, 50);
+        localStorage.setItem('watchHistory', JSON.stringify(watchHistory));
+    }
+
+    function addToSearchHistory(query) {
+        searchHistory = [query, ...searchHistory.filter(q => q !== query)].slice(0, 20);
+        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+    }
+
+    // ================================================================
+    //  THEME
+    // ================================================================
+
+    function toggleTheme() {
+        document.body.classList.toggle('light');
+        localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+    }
+    if (localStorage.getItem('theme') === 'light') document.body.classList.add('light');
+
+    // ================================================================
+    //  KEYBOARD SHORTCUTS
+    // ================================================================
+
+    document.addEventListener('keydown', e => {
+        const modal = document.getElementById('playerModal');
+        const graxy = document.getElementById('graxyPanel');
+        if (e.key === 'Escape') {
+            if (modal.classList.contains('active')) closePlayer();
+            else if (graxy.classList.contains('active')) toggleGraxybot();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); document.getElementById('searchInput').focus(); }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'g') { e.preventDefault(); toggleGraxybot(); }
+    });
+
+    // ================================================================
+    //  INIT
+    // ================================================================
+
+    window.addEventListener('DOMContentLoaded', () => {
+        renderSuggestions();
+        showWelcomeState();
+    });
+    </script>
+</body>
+</html>
