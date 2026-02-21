@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFVideos</title>
+    <title>FGVideos</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -835,8 +835,8 @@
 <body>
     <header>
         <div class="logo" onclick="goHome()">
-            <div class="logo-icon">GF</div>
-            GFVideos
+            <div class="logo-icon">FG</div>
+            FGVideos
         </div>
         <div class="search-container">
             <div class="search-wrapper">
@@ -956,7 +956,7 @@
     let graxyTypingEl = null;
 
     // Graxybot system prompt
-    const GRAXY_SYSTEM_PROMPT = `you are graxybot, a friendly ai assistant built into a video streaming app called gfvideos. you help users find and explore videos.
+    const GRAXY_SYSTEM_PROMPT = `you are graxybot, a friendly ai assistant built into a video streaming app called fgvideos. you help users find and explore videos.
 
 rules you must always follow:
 - speak entirely in lowercase. no capital letters anywhere, ever. not even at the start of sentences.
@@ -1282,7 +1282,7 @@ rules:
                 <div class="welcome-state">
                     <span class="welcome-icon">🔍</span>
                     <h2>Try searching something</h2>
-                    <p>Search for any topic, creator, or video — made for GF.</p>
+                    <p>Search for any topic, creator, or video — made for FG.</p>
                     <div class="welcome-chips">
                         ${SUGGESTION_TOPICS.map(t =>
                             `<div class="welcome-chip" onclick="quickSearch('${escapeHtml(t.query)}')">${t.label}</div>`
@@ -1313,7 +1313,7 @@ rules:
                 <div class="welcome-state">
                     <span class="welcome-icon">🔍</span>
                     <h2>Try searching something</h2>
-                    <p>Search for any topic, creator, or video — made for GF.</p>
+                    <p>Search for any topic, creator, or video — made for FG.</p>
                     <div class="welcome-chips">
                         ${SUGGESTION_TOPICS.map(t =>
                             `<div class="welcome-chip" onclick="quickSearch('${escapeHtml(t.query)}')">${t.label}</div>`
