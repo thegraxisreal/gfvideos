@@ -847,6 +847,10 @@
             </div>
         </div>
         <div class="header-actions">
+            <button class="header-btn" onclick="showHistory()" title="Watch History">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M13 3a9 9 0 1 0 9 9h-2a7 7 0 1 1-7-7v3l4-4-4-4v3zm1 10h-2V8h2v4.41l2.29 2.3-1.41 1.41L14 13z"/></svg>
+                History
+            </button>
             <button class="graxybot-header-btn" onclick="toggleGraxybot()">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
                 Graxybot
@@ -1723,6 +1727,45 @@ rules:
     function addToSearchHistory(query) {
         searchHistory = [query, ...searchHistory.filter(q => q !== query)].slice(0, 20);
         localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+    }
+
+    // ================================================================
+    //  WATCH HISTORY VIEW
+    // ================================================================
+
+    function showHistory() {
+        document.getElementById('searchInput').value = '';
+        currentSearchQuery = '';
+        document.querySelectorAll('.suggestion-chip').forEach(c => c.classList.remove('active'));
+        document.getElementById('suggestions').style.display = 'none';
+
+        const area = document.getElementById('contentArea');
+        const header = document.getElementById('sectionHeader');
+        const title = document.getElementById('sectionTitle');
+        const count = document.getElementById('resultsCount');
+
+        title.textContent = 'Watch History';
+
+        if (watchHistory.length === 0) {
+            header.style.display = 'none';
+            area.innerHTML = `
+                <div class="empty-state">
+                    <h2>No watch history yet</h2>
+                    <p>Videos you watch will appear here.</p>
+                </div>
+            `;
+            return;
+        }
+
+        header.style.display = 'flex';
+        count.innerHTML = `${watchHistory.length} video${watchHistory.length !== 1 ? 's' : ''} &nbsp;<button onclick="clearHistory()" style="background:none;border:none;color:var(--t3);font-size:12px;cursor:pointer;padding:0;text-decoration:underline;">Clear all</button>`;
+        displayVideos(watchHistory);
+    }
+
+    function clearHistory() {
+        watchHistory = [];
+        localStorage.removeItem('watchHistory');
+        showHistory();
     }
 
     // ================================================================
